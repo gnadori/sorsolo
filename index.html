@@ -3,159 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bohókás névrendező</title>
+    <title>Sorsoló - Dark Mode</title>
     <style>
         :root {
-            --bg-color: #f0f4f8;
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --accent-color: #ffe66d;
-            --text-color: #2d3436;
+            --bg-black: #000000;
+            --sidebar-gray: #121212;
+            --card-gray: #181818;
+            --spotify-green: #1db954;
+            --text-white: #ffffff;
+            --text-gray: #b3b3b3;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
         }
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 30px;
-            box-shadow: 10px 10px 0px var(--secondary-color);
-            border: 3px solid var(--text-color);
+        .main-container {
             width: 90%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 900px;
+            background: linear-gradient(180deg, #222222 0%, #121212 100%);
+            border-radius: 8px;
+            display: flex;
+            padding: 24px;
+            gap: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Bal oldali panel - beviteli mező */
+        .input-section {
+            flex: 1;
+            background-color: var(--sidebar-gray);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            letter-spacing: -0.5px;
         }
 
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 15px;
-            border: 2px solid var(--text-color);
-            border-radius: 15px;
-            font-size: 1rem;
+            height: 200px;
+            background-color: #2a2a2a;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            padding: 12px;
+            font-size: 0.9rem;
             resize: none;
-            box-sizing: border-box;
             outline: none;
-            background-color: #fff9db;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            background-color: #333333;
+            box-shadow: 0 0 0 1px #555;
         }
 
         button {
-            margin-top: 1.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: 2px solid var(--text-color);
-            padding: 12px 25px;
-            font-size: 1.1rem;
+            background-color: var(--spotify-green);
+            color: black;
+            border: none;
+            border-radius: 500px;
+            padding: 14px 32px;
+            font-size: 1rem;
             font-weight: bold;
-            border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 4px 4px 0px var(--text-color);
+            transition: transform 0.1s, background-color 0.2s;
         }
 
         button:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--text-color);
+            transform: scale(1.05);
+            background-color: #1ed760;
         }
 
         button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px var(--text-color);
+            transform: scale(0.95);
         }
 
-        #result {
-            margin-top: 2rem;
-            text-align: left;
-            padding: 0;
+        /* Jobb oldali panel - eredmények */
+        .result-section {
+            flex: 1.2;
+        }
+
+        .section-title {
+            color: var(--text-white);
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        #resultList {
             list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
         }
 
-        .name-item {
-            background: var(--accent-color);
-            margin: 8px 0;
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 2px solid var(--text-color);
-            font-weight: bold;
+        .name-card {
+            background-color: var(--card-gray);
+            padding: 12px 16px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            animation: popIn 0.3s ease-out forwards;
+            transition: background-color 0.3s;
+            border: 1px solid transparent;
         }
 
-        .name-item span {
-            margin-right: 10px;
-            background: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.8rem;
+        .name-card:hover {
+            background-color: #282828;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .index-number {
+            color: var(--text-gray);
+            margin-right: 16px;
+            font-size: 0.9rem;
+            width: 20px;
+        }
+
+        .name-text {
+            font-weight: 500;
+        }
+
+        .placeholder-text {
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* Reszponzivitás */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Ki legyen az első? 🎲</h1>
-    <textarea id="nameInput" placeholder="Írd be a neveket, minden nevet új sorba..."></textarea>
-    <br>
-    <button onclick="shuffleNames()">Keverés!</button>
-    <ul id="result"></ul>
+<div class="main-container">
+    <div class="input-section">
+        <h2>Sorsolási lista</h2>
+        <textarea id="nameInput" placeholder="Nevek (soronként egy név)..."></textarea>
+        <button onclick="shuffleNames()">KEVERÉS</button>
+    </div>
+
+    <div class="result-section">
+        <h2 class="section-title">Új sorrend</h2>
+        <div id="resultList">
+            <p class="placeholder-text">Add meg a neveket és kattints a gombra!</p>
+        </div>
+    </div>
 </div>
 
 <script>
     function shuffleNames() {
         const input = document.getElementById('nameInput').value;
-        const resultList = document.getElementById('result');
+        const resultContainer = document.getElementById('resultList');
         
-        // Nevek tömbbé alakítása, üres sorok kiszűrése
         let names = input.split('\n')
                          .map(name => name.trim())
                          .filter(name => name !== "");
 
         if (names.length === 0) {
-            alert("Kérlek, írj be legalább egy nevet!");
             return;
         }
 
-        // Véletlenszerű sorrend (Fisher-Yates algoritmus)
+        // Fisher-Yates keverés
         for (let i = names.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [names[i], names[j]] = [names[j], names[i]];
         }
 
-        // Lista megjelenítése
-        resultList.innerHTML = "";
+        resultContainer.innerHTML = "";
         names.forEach((name, index) => {
-            const li = document.createElement('li');
-            li.className = 'name-item';
-            li.style.animationDelay = (index * 0.1) + "s";
-            li.innerHTML = `<span>${index + 1}</span> ${name}`;
-            resultList.appendChild(li);
+            const div = document.createElement('div');
+            div.className = 'name-card';
+            div.innerHTML = `
+                <span class="index-number">${index + 1}</span>
+                <span class="name-text">${name}</span>
+            `;
+            resultContainer.appendChild(div);
         });
     }
 </script>
