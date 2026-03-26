@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bohókás Névrendező</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #ffe66d;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 10px 10px 0px var(--secondary-color);
+            border: 3px solid var(--text-color);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid var(--text-color);
+            border-radius: 15px;
+            font-size: 1rem;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            background-color: #fff9db;
+        }
+
+        button {
+            margin-top: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid var(--text-color);
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 4px 4px 0px var(--text-color);
+        }
+
+        button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--text-color);
+        }
+
+        button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--text-color);
+        }
+
+        #result {
+            margin-top: 2rem;
+            text-align: left;
+            padding: 0;
+            list-style: none;
+        }
+
+        .name-item {
+            background: var(--accent-color);
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 2px solid var(--text-color);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        .name-item span {
+            margin-right: 10px;
+            background: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ki legyen az első? 🎲</h1>
+    <textarea id="nameInput" placeholder="Írd be a neveket, minden nevet új sorba..."></textarea>
+    <br>
+    <button onclick="shuffleNames()">Keverés!</button>
+    <ul id="result"></ul>
+</div>
+
+<script>
+    function shuffleNames() {
+        const input = document.getElementById('nameInput').value;
+        const resultList = document.getElementById('result');
+        
+        // Nevek tömbbé alakítása, üres sorok kiszűrése
+        let names = input.split('\n')
+                         .map(name => name.trim())
+                         .filter(name => name !== "");
+
+        if (names.length === 0) {
+            alert("Kérlek, írj be legalább egy nevet!");
+            return;
+        }
+
+        // Véletlenszerű sorrend (Fisher-Yates algoritmus)
+        for (let i = names.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [names[i], names[j]] = [names[j], names[i]];
+        }
+
+        // Lista megjelenítése
+        resultList.innerHTML = "";
+        names.forEach((name, index) => {
+            const li = document.createElement('li');
+            li.className = 'name-item';
+            li.style.animationDelay = (index * 0.1) + "s";
+            li.innerHTML = `<span>${index + 1}</span> ${name}`;
+            resultList.appendChild(li);
+        });
+    }
+</script>
+
+</body>
+</html>
