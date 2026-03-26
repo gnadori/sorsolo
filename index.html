@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorsoló - Dark Mode</title>
+    <title>Sorsoló - Spotify Style</title>
     <style>
         :root {
             --bg-black: #000000;
@@ -29,99 +29,90 @@
             width: 90%;
             max-width: 900px;
             background: linear-gradient(180deg, #222222 0%, #121212 100%);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
-            padding: 24px;
+            padding: 40px 24px 24px 24px; /* Felső padding a gombnak */
             gap: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; /* Ez kell a gomb pozicionálásához */
         }
 
-        /* Bal oldali panel - beviteli mező */
+        /* A GOMB ÚJ HELYE */
+        .shuffle-button {
+            position: absolute;
+            top: -25px; /* Kilóg egy kicsit a dobozból, mint az igazi Spotify-on */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--spotify-green);
+            color: black;
+            border: none;
+            border-radius: 500px;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        /* Ha pontosan a két oszlop közé/felé szeretnéd, a bal oldali margót állíthatod */
+        .shuffle-button:hover {
+            transform: translateX(-50%) scale(1.05);
+            background-color: #1ed760;
+        }
+
         .input-section {
             flex: 1;
-            background-color: var(--sidebar-gray);
+            background-color: rgba(255, 255, 255, 0.05);
             padding: 20px;
             border-radius: 8px;
         }
 
         h2 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-top: 0;
-            letter-spacing: -0.5px;
+            margin-bottom: 20px;
         }
 
         textarea {
             width: 100%;
-            height: 200px;
+            height: 250px;
             background-color: #2a2a2a;
             border: none;
             border-radius: 4px;
             color: white;
             padding: 12px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             resize: none;
             outline: none;
             box-sizing: border-box;
-            margin-bottom: 15px;
         }
 
-        textarea:focus {
-            background-color: #333333;
-            box-shadow: 0 0 0 1px #555;
-        }
-
-        button {
-            background-color: var(--spotify-green);
-            color: black;
-            border: none;
-            border-radius: 500px;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, background-color 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            background-color: #1ed760;
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        /* Jobb oldali panel - eredmények */
         .result-section {
             flex: 1.2;
-        }
-
-        .section-title {
-            color: var(--text-white);
-            font-size: 1.4rem;
-            margin-bottom: 16px;
         }
 
         #resultList {
             list-style: none;
             padding: 0;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .name-card {
-            background-color: var(--card-gray);
-            padding: 12px 16px;
-            border-radius: 6px;
+            background-color: transparent;
+            padding: 8px 16px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
-            transition: background-color 0.3s;
-            border: 1px solid transparent;
+            transition: background-color 0.2s;
         }
 
         .name-card:hover {
-            background-color: #282828;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .index-number {
@@ -129,21 +120,22 @@
             margin-right: 16px;
             font-size: 0.9rem;
             width: 20px;
-        }
-
-        .name-text {
-            font-weight: 500;
+            text-align: right;
         }
 
         .placeholder-text {
             color: var(--text-gray);
-            font-style: italic;
+            font-size: 0.9rem;
+            opacity: 0.7;
         }
 
-        /* Reszponzivitás */
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
+                margin-top: 40px;
+            }
+            .shuffle-button {
+                top: -20px;
             }
         }
     </style>
@@ -151,16 +143,17 @@
 <body>
 
 <div class="main-container">
+    <button class="shuffle-button" onclick="shuffleNames()">KEVERÉS</button>
+
     <div class="input-section">
         <h2>Sorsolási lista</h2>
         <textarea id="nameInput" placeholder="Nevek (soronként egy név)..."></textarea>
-        <button onclick="shuffleNames()">KEVERÉS</button>
     </div>
 
     <div class="result-section">
-        <h2 class="section-title">Új sorrend</h2>
+        <h2>Új sorrend</h2>
         <div id="resultList">
-            <p class="placeholder-text">Add meg a neveket és kattints a gombra!</p>
+            <p class="placeholder-text">Add meg a neveket és nyomd meg a gombot fent!</p>
         </div>
     </div>
 </div>
@@ -175,10 +168,10 @@
                          .filter(name => name !== "");
 
         if (names.length === 0) {
+            alert("Írj be neveket!");
             return;
         }
 
-        // Fisher-Yates keverés
         for (let i = names.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [names[i], names[j]] = [names[j], names[i]];
